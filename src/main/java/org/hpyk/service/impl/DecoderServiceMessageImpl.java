@@ -1,5 +1,6 @@
 package org.hpyk.service.impl;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 import org.hpyk.model.Email;
@@ -26,11 +27,11 @@ public class DecoderServiceMessageImpl implements DecoderService<Message>{
 	        if (lines.length < 2 ) {
 	            return "Invalid encoded string";
 	        }
-	        String base64EncodedStr = lines[1];
-	        String originalKey = lines[2];
-	        originalKey.trim();
+	        String base64EncodedStr = lines[1].trim();
+	        String originalKey = lines[2].trim();
 	        setKey(originalKey+Email.getEmailAddress());
-	        String decodedStr = new String(Base64.getDecoder().decode(base64EncodedStr));
+	        System.out.print(base64EncodedStr);
+	        String decodedStr = new String(Base64.getDecoder().decode(base64EncodedStr),StandardCharsets.UTF_8);
 	        System.out.print(key);
 	        decodedStr = decodedStr.replace(key, " ");
 	        StringBuilder decodedString = new StringBuilder();

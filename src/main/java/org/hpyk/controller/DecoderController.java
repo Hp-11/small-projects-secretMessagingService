@@ -13,57 +13,49 @@ import org.hpyk.model.handler.impl.UnifiedHandler;
 import org.hpyk.service.DecoderService;
 
 /**
- * Servlet implementation class DecoderControllerImpl2
+ * Servlet implementation class DecoderController
  */
 @WebServlet("/decode")
 public class DecoderController extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-       
+    private static final long serialVersionUID = 1L;
+
     /**
      * @see HttpServlet#HttpServlet()
      */
     public DecoderController() {
         super();
-        // TODO Auto-generated constructor stub
     }
+
     DecoderService<?> decSer;
-	String str ="test";
-	File f = new File("C:\\Users\\Harsh\\eclipse-workspace\\SecureFiles\\src\\main\\webapp\\WEB-INF\\web.xml");
-	
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
-		UnifiedHandler h = new UnifiedHandler();
-		Object toDecode = request.getParameter("toDecode");
-		String email = request.getParameter("email");
-		
-		if (toDecode != null ) {
-	        h.setT(toDecode);
 
-	        // Safely retrieve the DecoderService object and handle potential errors
-	        DecoderService<?> decSer = (DecoderService<?>) h.getObjectForDecoding(email);
-	        if (decSer == null) {
-	            System.out.println("No DecoderService object found.");
-	        } else {
-	            System.out.println("DecoderService class: " + decSer.getClass().getName());
-//	            System.out.println("Decoded string: " + decSer.decode(toDecode));
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Forward to the POST method to handle form submission via POST
+        doPost(request, response);
+    }
 
-	            request.setAttribute("decodedMessage", decSer.decode(toDecode));
-	        }
-	    } else {
-	        System.out.println("No 'toDecode' parameter provided.");
-	    }
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        UnifiedHandler h = new UnifiedHandler();
 
-		
-        request.setAttribute("message", "Welcome to My Web Application!");
+        // Retrieve form parameters from POST payload
+        String toProcess = request.getParameter("toProcess");
+        String email = request.getParameter("email");
+
+        if (toProcess != null) {
+            h.setT(toProcess);
+
+            // Retrieve the DecoderService based on the email
+            DecoderService<?> decSer = (DecoderService<?>) h.getObjectForDecoding(email);
+            if (decSer == null) {
+                System.out.println("No DecoderService object found.");
+            } else {
+                // Decode the provided input 
+                request.setAttribute("decodedMessage", decSer.decode(toProcess));
+            }
+        } else {
+            System.out.println("No 'toProcess' parameter provided.");
+        }
+
+        request.setAttribute("message", "Decoding completed!");
         request.getRequestDispatcher("/WEB-INF/views/viewDecode.jsp").forward(request, response);
     }
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
-
 }

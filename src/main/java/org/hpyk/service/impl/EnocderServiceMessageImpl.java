@@ -1,5 +1,6 @@
 package org.hpyk.service.impl;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 import org.hpyk.model.Email;
@@ -38,7 +39,11 @@ public class EnocderServiceMessageImpl implements EncoderService<Message>{
 			String str=modelObject.getMsg();
 			String key = getKey()+Email.getEmailAddress();
 	        str = str.replace(" ", key)+key;
-	        String base64EncodedStr = Base64.getEncoder().encodeToString(str.getBytes());
+	        String base64EncodedStr = Base64.getEncoder().encodeToString(str.getBytes(StandardCharsets.UTF_8));
+	        int padding = 4 - (base64EncodedStr.length() % 4);
+	        if (padding < 4) {
+	        	base64EncodedStr += "=".repeat(padding);
+	        }
 	        StringBuilder encodedString = new StringBuilder();
 	        encodedString.append("Encoded on ").append(DateFactory.getDateNow()).append("<br>"); 
 	        encodedString.append(base64EncodedStr).append("<br>");

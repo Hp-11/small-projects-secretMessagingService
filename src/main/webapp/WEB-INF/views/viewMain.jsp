@@ -1,47 +1,56 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="ISO-8859-1">
-<title>Insert title here</title>
-<script type="text/javascript">
-    function redirectToEncode() {
-        // Get the input text value
-        var userInput = document.getElementById("userInput").value;
-        // Get the email value
-        var email = document.getElementById("userEmail").value;
-        // Redirect to the encode servlet with user input and email as parameters
-        window.location.href = "encode?toEncode=" + encodeURIComponent(userInput) + "&email=" + encodeURIComponent(email);
-    }
+    <meta charset="ISO-8859-1">
+    <title>Encode/Decode</title>
+    <script type="text/javascript">
+        function sendPostRequest(actionUrl) {
+            // Create a form element
+            var form = document.createElement("form");
+            form.method = "POST";
+            form.action = actionUrl;
 
-    function redirectToDecode() {
-        // Get the input text value
-        var userInput = document.getElementById("userInput").value;
-        var email = document.getElementById("userEmail").value;
-        // Redirect to the decode servlet with the user input as a parameter
-        window.location.href = "decode?toDecode=" + encodeURIComponent(userInput) + "&email=" + encodeURIComponent(email);
-    }
-</script>
+            // Get user input and email values
+            var userInput = document.getElementById("userInput").value;
+            var email = document.getElementById("userEmail").value;
+
+            // Create hidden input fields for user input and email
+            var userInputField = document.createElement("input");
+            userInputField.type = "hidden";
+            userInputField.name = "toProcess"; // Used for both encoding/decoding
+            userInputField.value = userInput;
+
+            var emailField = document.createElement("input");
+            emailField.type = "hidden";
+            emailField.name = "email";
+            emailField.value = email;
+
+            // Append hidden fields to the form
+            form.appendChild(userInputField);
+            form.appendChild(emailField);
+
+            // Append form to body and submit it
+            document.body.appendChild(form);
+            form.submit();
+        }
+    </script>
 </head>
 <body>
+    <h1>Encode/Decode Page</h1>
 
-    <!-- Main Body -->
-    <h1>This is the main body</h1>
-    
-    <!-- Multi-line text area for user to enter text -->
+    <!-- Multi-line text area for user input -->
     <label for="userInput">Enter text to encode/decode:</label>
     <textarea id="userInput" name="userInput" rows="5" cols="40"></textarea>
     <br><br>
-    
-    <!-- Input field for user to enter email -->
+
+    <!-- Input field for user's email -->
     <label for="userEmail">Enter receiver's email:</label>
     <input type="email" id="userEmail" name="userEmail" />
     <br><br>
 
-    <!-- Buttons to trigger redirect for encoding or decoding -->
-    <button onclick="redirectToEncode()">Send</button>
-    <button onclick="redirectToDecode()">Receive</button>
-
+    <!-- Buttons to trigger POST requests for encoding/decoding -->
+    <button type="button" onclick="sendPostRequest('encode')">Send (encode) </button>
+    <button type="button" onclick="sendPostRequest('decode')">Receive (decode)</button>
 </body>
 </html>
